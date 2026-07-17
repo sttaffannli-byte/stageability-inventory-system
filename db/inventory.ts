@@ -67,6 +67,18 @@ export async function addAsset(input: { assetCode: string; name: string; categor
   return result;
 }
 
+export async function deleteAsset(id: number) {
+  const database = db();
+  const asset = await database.prepare("SELECT id, asset_code AS assetCode, name, status FROM assets WHERE id = ?").bind(id).first<{ id:number; assetCode:string; name:string; status:string }>();
+  if (!asset) throw new Error("Hindi makita ang equipment record.");
+  if (asset.status === "pulled_out") throw new Error("I-return muna sa warehouse bago burahin ang equipment.");
+  await database.batch([
+    database.prepare("DELETE FROM movements WHERE asset_id = ?").bind(id),
+    database.prepare("DELETE FROM assets WHERE id = ?").bind(id),
+  ]);
+  return asset;
+}
+
 export async function recordScan(input: { assetCode: string; action: "pullout" | "return"; eventName: string; operatorName: string }) {
   const database = db();
   const asset = await database.prepare("SELECT id, asset_code AS assetCode, name, status, current_event AS currentEvent FROM assets WHERE asset_code = ?").bind(input.assetCode).first<{ id: number; assetCode: string; name: string; status: string; currentEvent: string | null }>();
