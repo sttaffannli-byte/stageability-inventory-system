@@ -13,7 +13,7 @@
     {
       "binding": "DB",
       "database_name": "stageability-inventory-db",
-      "database_id": "00000000-0000-4000-8000-000000000000",
+      "database_id": "996aebdc-988e-46b4-8b80-adb4f03c63c8",
       "migrations_dir": "drizzle"
     }
   ]
