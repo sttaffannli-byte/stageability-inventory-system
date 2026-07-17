@@ -1,0 +1,27 @@
+{
+  "version": "7",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "6",
+      "when": 1784254640416,
+      "tag": "0000_yellow_mongu",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1784256419214,
+      "tag": "0001_curious_stellaris",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1784259473556,
+      "tag": "0002_faithful_tomorrow_man",
+      "breakpoints": true
+    }
+  ]
+}
