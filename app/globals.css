@@ -25,3 +25,49 @@
 .auth-logo{width:96px!important;height:96px!important;display:block!important;object-fit:contain;background:#000;font-size:0!important}.brand-mark{width:48px!important;height:48px!important;display:block!important;object-fit:contain;background:#000;flex:0 0 auto}.auth-card>p,.password-help{font-size:11px}.auth-card label,.form-card label,.scan-console label{font-size:10px}.auth-card input,.form-card input,.form-card select,.scan-console select{font-size:12px}.auth-switch,.auth-error,.auth-card footer{font-size:10px}.kicker{font-size:10px}.btn{font-size:11px}.search-box input,.table-tools select{font-size:11px}table{font-size:11px}th{font-size:9px}code{font-size:10px}.equipment-cell small,.person-cell small,.block{font-size:9px}.row-actions{display:flex;gap:6px}.row-actions button{height:32px;border:1px solid #3b3b42;border-radius:6px;background:#202025;color:#ddd;padding:0 8px;display:inline-flex;align-items:center;gap:5px;font-size:9px;white-space:nowrap}.row-actions button:hover{border-color:#777}.row-actions button.danger{color:#ff8589;border-color:#713238;background:#30171a}.row-actions button:disabled{color:#777;border-color:#333;background:#17171a}.barcode-preview-card{width:min(560px,100%);background:#18181c;border:1px solid #44444b;border-top:2px solid var(--red);border-radius:14px;padding:22px;box-shadow:0 30px 100px #000}.barcode-label{margin:10px auto 18px;max-width:430px;background:#fff;color:#111;border:2px solid #111;border-radius:10px;padding:20px;text-align:center}.barcode-label img{width:70px;height:70px;object-fit:contain;display:block;margin:0 auto 8px}.barcode-label b,.barcode-label span,.barcode-label small{display:block}.barcode-label b{font-size:13px}.barcode-label span{font-size:16px;font-weight:800;margin-top:10px}.barcode-label small{font-size:11px;color:#555;margin:4px 0 10px}.barcode-label svg{display:block;max-width:100%;height:auto;margin:auto}.form-actions{display:flex;justify-content:flex-end;gap:9px}
 @media(max-width:760px){.row-actions{min-width:265px}.auth-logo{width:74px!important;height:74px!important}}
 @media print{body.print-one-label .app-main,body.print-one-label .sidebar,body.print-one-label .print-sheet{display:none!important}body.print-one-label .barcode-modal{display:grid!important;position:static!important;background:white!important;padding:0!important;backdrop-filter:none!important}body.print-one-label .barcode-preview-card{border:0!important;box-shadow:none!important;background:white!important;width:100%!important;padding:0!important}body.print-one-label .barcode-preview-card>.modal-head,body.print-one-label .barcode-preview-card>.form-actions{display:none!important}body.print-one-label .barcode-label{width:90mm;max-width:90mm;margin:10mm auto!important;border:1px solid #000!important}}
+
+/* Staff payroll action layout fix */
+.staff-grid{
+  grid-template-columns:repeat(3,minmax(300px,1fr));
+  align-items:stretch;
+}
+
+.staff-card{
+  min-width:0;
+  overflow:hidden;
+}
+
+.staff-card footer{
+  display:grid;
+  grid-template-columns:repeat(5,minmax(0,1fr));
+  gap:8px;
+  align-items:stretch;
+  margin-top:14px;
+}
+
+.staff-card footer button{
+  min-width:0;
+  min-height:38px;
+  padding:8px 6px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  white-space:nowrap;
+  line-height:1;
+  font-size:12px;
+  border-radius:7px;
+}
+
+.staff-card footer button.danger{
+  color:#ff6b6b;
+}
+
+@media(max-width:1300px){
+  .staff-grid{grid-template-columns:repeat(2,minmax(300px,1fr))}
+}
+
+@media(max-width:760px){
+  .staff-grid{grid-template-columns:1fr}
+  .staff-card footer{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .staff-card footer button:last-child{grid-column:1/-1}
+}
