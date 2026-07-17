@@ -16,7 +16,7 @@ import {
   timeOutAttendance,
   updateRecord,
   updateStaffStatus,
-} from "../../../../db/backoffice";
+} from "../../../db/backoffice";
 import {
   authError,
   isAdmin,
@@ -24,7 +24,7 @@ import {
   requireUser,
   resetCredentialForStaff,
   setPassword,
-} from "../../../../db/auth";
+} from "../../../db/auth";
 
 export async function GET(request: Request) {
   try {
