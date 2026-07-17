@@ -247,3 +247,4 @@ export async function approvePayroll(id:number,approvedBy:string) {
   await ensureBackOfficeSchema();
   return db().prepare("UPDATE payroll_records SET status='approved',approved_by=?,approved_at=CURRENT_TIMESTAMP WHERE id=? RETURNING id")
     .bind(approvedBy,id).first();
+}
