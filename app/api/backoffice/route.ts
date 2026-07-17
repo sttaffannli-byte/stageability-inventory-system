@@ -71,7 +71,12 @@ export async function POST(request: Request) {
   try {
     const body = (await request.json()) as Record<string, unknown>;
     const resource = text(body.resource);
-    await requireUser(request, resource === "stock" ? undefined : "admin");
+    const user = await requireUser(request);
+    const admin = await isAdmin(user);
+
+    if (!admin && !["stock", "attendance"].includes(resource)) {
+      return Response.json({ error: "Admin access is required." }, { status: 403 });
+    }
 
     if (resource === "client") {
       if (!required(body, ["clientCode", "name", "contact"])) {
@@ -191,12 +196,28 @@ export async function POST(request: Request) {
     }
 
     if (resource === "attendance") {
-      if (!required(body, ["staffId", "timeIn"])) {
-        return Response.json({ error: "Staff and time in are required." }, { status: 400 });
+      if (!required(body, ["timeIn"])) {
+        return Response.json({ error: "Time in is required." }, { status: 400 });
       }
+
+      const staffId = admin ? num(body.staffId || user.id) : user.id;
+      const data = await getBackOffice();
+      const existingOpen = data.attendanceRecords.find(
+        (row) =>
+          Number((row as { staffId: number }).staffId) === staffId &&
+          String((row as { status: string }).status) === "open",
+      );
+
+      if (existingOpen) {
+        return Response.json(
+          { error: "You already have an active Time In. Please Time Out first." },
+          { status: 409 },
+        );
+      }
+
       return Response.json({
         record: await createAttendance({
-          staffId: num(body.staffId),
+          staffId,
           eventName: text(body.eventName),
           timeIn: text(body.timeIn),
           lat: body.lat == null ? undefined : num(body.lat),
@@ -243,7 +264,12 @@ export async function PATCH(request: Request) {
   try {
     const body = (await request.json()) as Record<string, unknown>;
     const resource = text(body.resource);
-    await requireUser(request, "admin");
+    const user = await requireUser(request);
+    const admin = await isAdmin(user);
+
+    if (resource !== "attendance-timeout" && !admin) {
+      return Response.json({ error: "Admin access is required." }, { status: 403 });
+    }
 
     if (resource === "notification") {
       return Response.json(await markNotificationsRead(body.id ? num(body.id) : undefined));
@@ -262,9 +288,33 @@ export async function PATCH(request: Request) {
     }
 
     if (resource === "attendance-timeout") {
+      const attendanceId = num(body.id);
+      const data = await getBackOffice();
+      const attendance = data.attendanceRecords.find(
+        (row) => Number((row as { id: number }).id) === attendanceId,
+      );
+
+      if (!attendance) {
+        return Response.json({ error: "Attendance record not found." }, { status: 404 });
+      }
+
+      if (!admin && Number((attendance as { staffId: number }).staffId) !== user.id) {
+        return Response.json(
+          { error: "You can only Time Out your own attendance record." },
+          { status: 403 },
+        );
+      }
+
+      if (String((attendance as { status: string }).status) !== "open") {
+        return Response.json(
+          { error: "This attendance record is already completed." },
+          { status: 409 },
+        );
+      }
+
       return Response.json({
         record: await timeOutAttendance({
-          id: num(body.id),
+          id: attendanceId,
           timeOut: text(body.timeOut),
           lat: body.lat == null ? undefined : num(body.lat),
           lng: body.lng == null ? undefined : num(body.lng),
